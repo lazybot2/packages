@@ -29,10 +29,23 @@ cfbin = t:option(Value, "cfbin", translate("cloudflared程序路径"),
 cfbin.placeholder = "/usr/bin/cloudflared"
 cfbin.rmempty=false
 
-e=t:option(DynamicList,"token",translate('隧道 Token'),
+e=t:option(TextValue,"token",translate('隧道 Token'),
 	translate("需要先去官网创建隧道，再复制以eyJh开头的一长串token值，注意复制正确否则会启动失败<br>关于没有信用卡可以使用命令创建隧道 ：<a href='https://blog.outv.im/2021/cloudflared-tunnel/' target='_blank'>教程1</a>&nbsp;&nbsp;&nbsp;<a href='https://zhuanlan.zhihu.com/p/621870045' target='_blank'>教程2</a>"))
 e.placeholder = "eyJhIjoiMzQ3NTNhNDBlZTg4NTYzMDU5YmUzN2U2ZDY4YjEzY2QiLCJ0IjoiNTJkMjkwYTktNmFiNy00NDM5LThlODYtMzhmYTI0NTBhZjNhIiwicyI6IlptRXlOekl4TURZdFpUa3dPUzAwTnprM0xUbGlaR1l0TWpNNVpUUTBNV0k0TTJNMSJ9"
 e:depends("cmdenabled", 0)
+
+region = t:option(ListValue, "region", translate("线路选择"),
+	translate("目前只能选择美国线路us。默认为:auto"))
+region:value("auto")	
+region:value("us")	
+region:depends("cmdenabled", 0)
+
+protocol = t:option(ListValue, "protocol", translate("传输协议"),
+	translate("传输协议选择。默认为:auto"))
+protocol:value("auto")	
+protocol:value("quic")	
+protocol:value("http2")	
+protocol:depends("cmdenabled", 0)
 
 custom_cmd = t:option(DynamicList, "custom_cmd", translate("自定义启动参数"),
                        translate("这里不需要再加程序路径，只需要正常添加启动参数即可，详细的命令启动参数：<a href='https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/tunnel-run-parameters/' target='_blank'>cloudflared文档</a><br>注意:每个参数必须单独添加,如添加第一个参数tunnel 第二个参数--no-autoupdate 第三个参数--logfile /tmp/cloudflared.info 第四个参数run <br>一个框内不能添加两个参数,多个参数点+多个框即可<br>如需输出日志路径请设置 --logfile /tmp/cloudflared.info"))

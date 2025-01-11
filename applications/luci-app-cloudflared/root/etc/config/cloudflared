@@ -1,7 +1,9 @@
 config cloudflared 'config'
-	    option cmdenabled '0'
-	    option enabled '0'
+	option cmdenabled '0'
+	option enabled '0'
      	option loglevel 'info'
+     	option protocol 'auto'
+     	option region 'auto'
      	option cfbin '/usr/bin/cloudflared'
      	list custom_cmd '--logfile /tmp/cloudflared.info'
 	

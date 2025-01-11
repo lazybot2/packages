@@ -9,11 +9,17 @@ start_instance() {
         local enabled
 	config_get_bool enabled "$cfg" 'enabled' '0'
 	[ "$enabled" = "1" ] || return 1
-	local token loglevel custom_cmd cmdenabled
+	local token custom_cmd cmdenabled
+	local region='auto'
+	local protocol='auto'
+	local loglevel='info'
 	config_get token "$cfg" 'token'
 	config_get loglevel "$cfg" 'loglevel'
+	config_get protocol "$cfg" 'protocol'
+	config_get region "$cfg" 'region'
 	config_get custom_cmd "$cfg" 'custom_cmd'
 	config_get_bool cmdenabled "$cfg" 'cmdenabled'
+	
 	if [ ! -f "$PROG" ] ;then
 	 uci -q set cloudflared.@cloudflared[0].enabled=0 
 	 uci commit cloudflared 
@@ -32,6 +38,7 @@ start_instance() {
 	  echo "$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X) : $PROG 程序不完整或CPU架构不支持的程序，无法启动!" >>/tmp/cloudflared.info 
 	  exit 1
 	fi
+	
 	if [ "$cmdenabled" = "1" ] && [ -z "$custom_cmd" ] ;then 
 	   uci -q set cloudflared.@cloudflared[0].enabled=0 
 	   uci commit cloudflared 
@@ -59,7 +66,9 @@ start_instance() {
 	   procd_append_param command tunnel
 	   procd_append_param command --no-autoupdate
 	   procd_append_param command --logfile /tmp/cloudflared.info
+	   [ "$region" != "auto" ] && procd_append_param command --region "$region"
 	   [ "$loglevel" != "info" ] && procd_append_param command --loglevel "$loglevel"
+	   [ "$protocol" != "auto" ] && procd_append_param command --protocol "$protocol"
 	   procd_append_param command run
 	   procd_append_param command --token "$token"
 	fi
