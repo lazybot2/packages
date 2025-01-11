@@ -20,10 +20,23 @@ cfbin = t:option(Value, "cfbin", translate("cloudflared program path"),
 cfbin.placeholder = "/usr/bin/cloudflared"
 cfbin.rmempty=false
 
-e=t:option(DynamicList,"token",translate('Token'),
+e=t:option(TextValue,"token",translate('Token'),
 	translate("You need to go to the official website to create a tunnel first, <br>and then copy a long string of token values ​​starting with eyJh.<br> Be careful to copy correctly, otherwise the startup will fail.<br>You can also create a tunnel using the following command ：<a href='https://blog.outv.im/2021/cloudflared-tunnel/' target='_blank'>Tutorial-1</a>&nbsp;&nbsp;&nbsp;<a href='https://zhuanlan.zhihu.com/p/621870045' target='_blank'>Tutorial-2</a>"))
 e.placeholder = "eyJhIjoiMzQ3NTNhNDBlZTg4NTYzMDU5YmUzN2U2ZDY4YjEzY2QiLCJ0IjoiNTJkMjkwYTktNmFiNy00NDM5LThlODYtMzhmYTI0NTBhZjNhIiwicyI6IlptRXlOekl4TURZdFpUa3dPUzAwTnprM0xUbGlaR1l0TWpNNVpUUTBNV0k0TTJNMSJ9"
 e:depends("cmdenabled", 0)
+
+region = t:option(ListValue, "region", translate("region"),
+	translate("Allows you to choose the regions to which connections are established. Currently the only available value is , which routes all connections through data centers in the United States. Default auto"))
+region:value("auto")	
+region:value("us")	
+region:depends("cmdenabled", 0)
+
+protocol = t:option(ListValue, "protocol", translate("protocol"),
+	translate("Specifies the protocol used to establish a connection between and the Cloudflare global network. Default auto"))
+protocol:value("auto")	
+protocol:value("quic")	
+protocol:value("http2")	
+protocol:depends("cmdenabled", 0)
 
 custom_cmd = t:option(DynamicList, "custom_cmd", translate("Custom startup parameters"),
                        translate("There is no need to add the program path here, just add the startup parameters normally. <br>Detailed command startup parameters:<a href='https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/tunnel-run-parameters/' target='_blank'>cloudflared doc</a><br>Note: Each parameter must be added separately, for example, add the first parameter:tunnel <br> Second parameter:--no-autoupdate The third parameter--logfile /tmp/cloudflared.info The fourth parameter:run <br>You cannot add two parameters in one box, you can only click + input in multiple input boxes<br>If you need to output the log path, please set it: --logfile /tmp/cloudflared.info"))
